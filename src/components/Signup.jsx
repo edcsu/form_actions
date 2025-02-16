@@ -1,9 +1,47 @@
+import { isEmail, isNotEmpty, hasMinLength, isEqualToOtherValue} from '../util/validation'
 export default function Signup() {
   function signupAction(formData) {
-    const enteredEmail = formData.get('email')
+    const email = formData.get('email')
+    const password = formData.get('password')
+    const confirmPassword = formData.get('confirm-password')
+    const firstName = formData.get('first-name')
+    const lastName = formData.get('last-name')
+    const role = formData.get('role')
+    const terms = formData.get('terms')
+    const acquisitionChannel = formData.getAll('acquisition')
+
+    let errors = []
+
+    if (!isEmail(email)) {
+      errors.push('Invalid email address')
+    }
+
+    if (!isNotEmpty(password) || !(hasMinLength(password, 6))) {
+      errors.push('You must provide a password that is atleast 6 characters')
+    }
+
+    if (!isEqualToOtherValue(password, confirmPassword)) {
+      errors.push('Passwords do not match')
+    }
+
+    if (!isNotEmpty(firstName) || !isNotEmpty(lastName)) {
+      errors.push('Please provide both your first and last names')
+    }
+
+    if (!isNotEmpty(role)) {
+      errors.push('Please select a role')
+    }
+
+    if (!terms) {
+      errors.push('You must agree to the terms and condtions.')
+    }
+
+    if (acquisitionChannel.length === 0) {
+      errors.push('Please select atleast one acquisition channel')
+    }
     console.log(enteredEmail)
   }
-  
+
   return (
     <form action={signupAction}>
       <h2>Welcome on board!</h2>
@@ -54,7 +92,7 @@ export default function Signup() {
           <option value="other">Other</option>
         </select>
       </div>
-
+ 
       <fieldset>
         <legend>How did you find us?</legend>
         <div className="control">
